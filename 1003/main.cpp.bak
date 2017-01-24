@@ -1,0 +1,94 @@
+#include <iostream>
+#include <vector>
+#include <unordered_set>
+#include <unordered_map>
+using namespace std;
+
+struct Way{
+	int in,out;
+	int weight;
+};
+
+struct Node{
+	unordered_set<int> neighbour;
+	vector<int> weight;
+	int team;
+};
+
+void getNeighbours(const vector<Way>& ways, vector<Node>& nodes){
+	for(int i=0;i<nodes.size();++i){
+		nodes[i].weight.resize(nodes.size());
+	}
+	for(int i=0;i<ways.size();++i){
+		int node1=ways[i].in;
+		int node2=ways[i].out;
+		nodes[node1].neighbour.insert(node2);
+		nodes[node2].neighbour.insert(node1);
+		nodes[node1].weight[node2] = ways[i].weight;
+		nodes[node2].weight[node1] = ways[i].weight;
+	}
+}
+
+void backtrack(const int& begin,const int& end,int& min,int & maxteam,int &team,int &weight,int& cnt,const vector<Node>& nodes,unordered_set<int>& arrived){
+	if(begin == end){
+		if(weight < min){
+			min=weight;
+			cnt=1;
+			maxteam=team;
+		}else if(weight==min){
+			++cnt;
+			maxteam = team>maxteam? team:maxteam;
+		}
+	}else{
+		for(auto it=nodes[begin].neighbour.begin();it!=nodes[begin].neighbour.end();++it){
+			if(arrived.find(*it)==arrived.end() && weight < min){
+				arrived.insert(*it);
+				team += nodes[*it].team;
+				weight += nodes[begin].weight[*it];
+				backtrack(*it,end,min,maxteam,team,weight,cnt,nodes,arrived);
+				arrived.erase(*it);
+				team -= nodes[*it].team;
+				weight -= nodes[begin].weight[*it];
+			}
+		}
+	}
+}
+
+
+int main(){
+	int n,m,c1,c2;
+	cin>>n>>m>>c1>>c2;
+	vector<Node> nodes(n);
+	for(int i=0;i<n;++i){
+		cin>>nodes[i].team;
+	}
+	vector<Way> ways(m);
+	for(int i=0;i<m;++i){
+		cin>>ways[i].in>>ways[i].out>>ways[i].weight;
+	}
+	getNeighbours(ways,nodes);
+	
+	
+	cout<<endl;
+	for(int i=0;i<n;++i){
+		cout<<i<<" ";
+		for(auto it=nodes[i].neighbour.begin();it!=nodes[i].neighbour.end();++it){
+			cout<<*it<<" "<<nodes[i].weight[*it]<<" ";
+		}
+		cout<<endl;
+
+		cout<<nodes[i].team<<endl;
+	}
+	
+	unordered_set<int> arrived;
+	arrived.insert(c1);
+	int min=10000;
+	int maxteam=0;
+	int team=nodes[c1].team;
+	int weight=0;
+	int cnt=0;
+	//cout<<endl;
+	backtrack(c1,c2,min,maxteam,team,weight,cnt,nodes,arrived);
+	cout<<cnt<<" "<<maxteam<<endl;
+	return 0;
+}

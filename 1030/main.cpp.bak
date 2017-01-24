@@ -1,0 +1,84 @@
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+struct Node{
+	vector<int> neighbour;
+	vector<int> dist;
+	vector<int> cost;
+};
+
+bool find(const vector<int>& v,const int& j){
+	for(int i=0;i<v.size();++i){
+		if(v[i]==j){
+			return true;
+		}
+	}
+	return false;
+}
+
+void DFS(int i,const int& d,int& cost,int& dist,int& mincost,int& mindist,vector<int>& route,const vector<Node>& city,vector<int>& visited){
+	cout<<"i="<<i<<" cost="<<cost<<" dist="<<dist<<" mincost="<<mincost<<" mindist="<<mindist<<endl;
+	cout<<"visited=";
+	for(int j=0;j<visited.size();++j){
+		cout<<visited[j]<<" ";
+	}
+	cout<<endl;
+	if(i==d){
+		if(dist<mindist ||(dist==mindist && cost<mincost)){
+			mindist=dist;
+			mincost=cost;
+			route=visited;
+		}
+		return;
+	}else{
+		for(int j=0;j<city[i].neighbour.size();++j){
+			int jj=city[i].neighbour[j];
+			//cout<<"jj="<<jj<<" find="<<find(visited,jj)<<endl;
+			if(find(visited,jj)==false && (cost<mincost ||(cost==mincost && dist<mindist))){
+				visited.push_back(jj);
+				dist += city[i].dist[j];
+				cost += city[i].cost[j];
+				DFS(jj,d,cost,dist,mincost,mindist,route,city,visited);
+				visited.pop_back();
+				dist -= city[i].dist[j];
+				cost -= city[i].cost[j];
+			}
+
+
+		}
+	}
+}
+
+
+int main(){
+	const int inf=0xffff;
+	int n,m,s,d;
+	cin>>n>>m>>s>>d;
+	vector<Node> city(n);
+	int c1,c2,dist,cost;
+	for(int i=0;i<m;++i){
+		cin>>c1>>c2>>dist>>cost;
+		city[c1].neighbour.push_back(c2);
+		city[c1].dist.push_back(dist);
+		city[c1].cost.push_back(cost);
+		city[c2].neighbour.push_back(c1);
+		city[c2].dist.push_back(dist);
+		city[c2].cost.push_back(cost);
+	}
+	vector<int> route;
+	route.push_back(s);
+	dist=0;
+	cost=0;
+	int mincost=inf;
+	int mindist=inf;
+	vector<int> visited;
+	visited.push_back(s);
+	DFS(s,d,cost,dist,mincost,mindist,route,city,visited);
+	for(int i=0;i<route.size();++i){
+		cout<<route[i]<<" ";
+	}
+	cout<<mindist<<" "<<mincost<<endl;
+	return 0;
+}

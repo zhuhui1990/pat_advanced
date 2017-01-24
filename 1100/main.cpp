@@ -1,0 +1,74 @@
+#include <iostream>
+#include <vector>
+#include <string>
+
+using namespace std;
+
+int main(){
+	string zero("tret");
+	vector<string> lower({"jan","feb","mar","apr","may","jun","jly","aug","sep","oct","nov","dec"});
+	vector<string> upper({"tam","hel","maa","huh","tou","kes","hei","elo","syy","lok","mer","jou"});
+	int n=0;
+	string s;
+	getline(cin,s);
+	for(int i=0;i<s.length();++i){
+		n = n*10+s[i]-'0';
+	}
+	for(int i=0;i<n;++i){
+		getline(cin,s);
+		if(s[0]>='0' && s[0]<='9'){
+			int a=0;
+			for(int i=0;i<s.length();++i){
+				a = a*10+s[i]-'0';
+			}
+			if(a==0){
+				cout<<zero<<endl;
+				continue;
+			}
+			int low=a%13,up=a/13;
+			if(up!=0){
+				cout<<upper[up-1];
+				if(low!=0)
+					cout<<" ";
+				else
+					cout<<endl;
+			}
+			if(low!=0){
+				cout<<lower[low-1]<<endl;
+			}
+		}else{
+			if(s.length()==4 && s==zero){
+				cout<<0<<endl;
+			}else if(s.length()==3){
+				for(int i=0;i<12;++i){
+					if(s==lower[i]){
+						cout<<i+1<<endl;
+						break;
+					}if(s==upper[i]){
+						cout<<(i+1)*13<<endl;
+						break;
+					}
+				}
+			}else{
+				string s1(s.begin(),s.begin()+3);
+				int a=0;
+				for(int i=0;i<12;++i){
+					if(s1==upper[i]){
+						a += (i+1)*13;
+						break;
+					}
+				}
+				string s2(s.begin()+4,s.end());
+				for(int i=0;i<12;++i){
+					if(s2==lower[i]){
+						a += i+1;
+						break;
+					}
+				}
+				cout<<a<<endl;
+			}
+		}
+	}
+	
+	return 0;
+}

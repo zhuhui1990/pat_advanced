@@ -1,0 +1,53 @@
+#include <iostream>
+#include <map>
+#include <iomanip>
+
+using namespace std;
+
+int main(){
+	int k1,k2;
+	map<int,double> h;
+	int n;
+	double a;
+	cin>>k1;
+	for(int i=0;i<k1;++i){
+		cin>>n>>a;
+		h.insert({n,a});
+	}
+	cin>>k2;
+	for(int i=0;i<k2;++i){
+		cin>>n>>a;
+		if(h.find(n)!=h.end())
+			h[n] += a;
+		else
+			h.insert({n,a});
+	}
+	
+	for(auto it=h.begin();it!=h.end();++it){
+			if(it->second < 0.05 && it->second > -0.05){
+				h.erase(it);
+			}
+	}
+
+
+	cout<<h.size();
+	if(h.size()==0){
+		cout<<endl;
+		return 0;
+	}else{
+	}
+	cout<<setprecision(1)<<fixed;
+
+	
+
+
+	for(auto it=h.rbegin();it!=h.rend();){
+
+		cout<<it->first<<" "<<it->second;
+		auto it1=++it;
+		if(it1!=h.rend())
+			cout<<" ";
+	}
+	
+	return 0;
+}

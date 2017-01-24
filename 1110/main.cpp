@@ -1,0 +1,90 @@
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <cstdio>
+
+using namespace std;
+
+struct Node{
+	int father=-1;
+	int lchild;
+	int rchild;
+};
+
+
+int main(){
+	int n;
+	scanf("%d",&n);
+	if(n==1){
+		cout<<"YES 0"<<endl;
+		return 0;
+	}
+	vector<Node> nodes(n);
+	char a[5],b[5];
+	int a1,b1;
+	for(int i=0;i<n;++i){
+		scanf("%s %s",a,b);
+		if(a[0]!='-'){
+			sscanf(a,"%d",&a1);  
+		}else{
+			a1=-1;
+		}
+		if(b[0]!='-'){
+			sscanf(b,"%d",&b1);  
+		}else{
+			b1=-1;
+		}
+		//cout<<"i="<<i<<" a1="<<a1<<" b1="<<b1<<endl;
+		nodes[i].lchild=a1;
+		nodes[i].rchild=b1;
+		if(a1>=0){
+			nodes[a1].father=i;
+		}
+		if(b1>=0){
+			nodes[b1].father=i;
+		}
+	}
+	int root;
+	for(int i=0;i<n;++i){
+		if(nodes[i].father==-1){
+			root=i;
+			break;
+		}
+	}
+	//cout<<"root="<<root<<endl;
+	//BFS，在数所有节点前发现有节点缺子节点，则不是Complete Binary Tree
+	queue<int> q;
+	int cnt=1;
+	bool flag=false;
+	int temp;
+	q.push(root);
+	while(!q.empty()){
+		temp=q.front();
+		q.pop();
+		if(nodes[temp].lchild == -1){
+			flag=true;
+			break;
+		}
+		q.push(nodes[temp].lchild);
+		++cnt;
+		if(cnt == n){
+			break;
+		}
+		if(nodes[temp].rchild == -1){
+			flag=true;
+			break;
+		}
+		q.push(nodes[temp].rchild);
+		++cnt;
+		if(cnt == n){
+			break;
+		}
+	}
+	if(flag){
+		cout<<"NO "<<root<<endl;
+	}else{
+		int tmp1=nodes[temp].rchild==-1? nodes[temp].lchild : nodes[temp].rchild;
+		cout<<"YES "<<tmp1<<endl;
+	}
+	return 0;
+}

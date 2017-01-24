@@ -1,0 +1,92 @@
+#include <iostream>
+#include <cstdlib>
+#include <string>
+#include <iomanip>
+#include <algorithm>
+
+using namespace std;
+
+bool checkvalid(const string& a){
+	int i=1,point_count=0;
+	if( !(a[0] == '-' || a[0] >='0' && a[0] <= '9' || a[0] == '+' || a[0] =='.')) //第一位非法
+		return 0;
+
+	if(a[0] == '0')
+	{
+		if( !(a[1] == '.' || a[1] =='\0')) //第一位为0
+			return 0;
+	}
+	if(a[0] == '.')
+	{
+		if( !(a[1] =='\0' || a[2] == '\0') )
+			return 0;
+		point_count ++;
+	}
+	if(a[0] == '-' || a[0] == '+' )  //负数或加了正号的正数的第一位为0
+	{
+		if(a[1] == '0')
+		{
+			if( ! (a[2] == '.' || a[2] == '\0'))
+				return 0;
+		}
+		if(!(a[1] >='0' && a[1] <='9' || a[1] == '.'))//符号的下一位必须是数字或小数点
+			return 0;
+	}
+	while(a[i] != '\0')  //第2位开始
+	{
+		if(a[i] =='.')
+		{
+			point_count++;
+			if(point_count == 2) //至多一个小数点
+				return 0;
+			if(   !(a[i-1] <='9' && a[i-1] >= '0' || a[i-1] =='+' || a[i-1] =='-') ) //小数点左必是数字或符号
+				return 0;
+			if( !(a[i+2] == '\0' || a[i+3] == '\0') ) //小数点后2至3位必有一个为字符串终点
+				return 0;
+		}
+		if( !(a[i] >='0' && a[i] <='9' || a[i] =='.') ) //必须都是合法的数字或小数点
+			return 0;
+		i++;
+	}
+	if(! (atof(a.c_str()) <= 1000.00 && atof(a.c_str()) >=-1000.00) )  //越界
+		return 0;
+	return 1;
+
+}
+
+
+int main(){
+	int n;
+	cin>>n;
+	string s;
+	double d;
+	int cnt=0;
+	double sum=0.;
+	for(int i=0;i<n;++i){
+		bool isNumber=true;
+		cin>>s;
+		d=atof(s.c_str());
+		isNumber=checkvalid(s);
+		
+		if(isNumber==false){
+			cout<<"ERROR: "<<s<<" is not a legal number"<<endl;
+		}
+		else{
+			sum += d;
+			++cnt;
+		}
+	}
+	
+	if(cnt == 0){
+		cout<<"The average of 0 numbers is Undefined"<<endl;
+	}else if(cnt ==1){
+		cout<<"The average of 1 number is ";
+		cout<<setprecision(2)<<fixed;
+		cout<<sum/cnt<<endl;
+	}else{
+		cout<<"The average of "<<cnt<<" numbers is ";
+		cout<<setprecision(2)<<fixed;
+		cout<<sum/cnt<<endl;
+	}
+	return 0;
+}

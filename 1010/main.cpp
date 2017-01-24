@@ -1,0 +1,76 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+
+inline long long charToInt(const char c){
+		long long res;
+		if(c>='0' && c<='9'){
+			res = c-'0';
+		}else if(c>='a' && c<='z'){
+			res = c-'a'+10;
+		}
+		return res;
+}
+
+long long stringToDec(const string& s,const long long& radix){
+	long long res=0;
+	char c;
+	for(int i=0;i<s.size();++i){
+		c=s[i];
+		res *= radix;
+		res += charToInt(c);
+		if(res<0) //overflow
+			return -1; 
+	}
+	return res;
+}
+
+int main(){
+	string s1,s2;
+	long long n1,n2;
+	int tag;
+	long long radix;
+	cin>>s1>>s2>>tag>>radix;
+	bool flag=false;
+	long long minRadix=0,maxRadix,radix2;
+	if(s1=="1" && s2=="1"){
+		cout<<"2"<<endl;
+		return 0;
+	}
+	if(s1==s2){
+		cout<<radix<<endl;
+		return 0;
+	} 
+	
+	if(tag==2){
+		string temp = s1;
+		s1=s2;
+		s2=temp;
+	}
+	
+	n1=stringToDec(s1,radix);
+	for(int i=0;i<s2.length();++i){
+		minRadix=charToInt(s2[i])>minRadix? charToInt(s2[i])+1:minRadix;
+		//cout<<minRadix<<endl;
+	}
+	maxRadix=n1+1;
+	while(minRadix<=maxRadix){
+		radix2=(minRadix+maxRadix)/2;
+		n2=stringToDec(s2,radix2);
+		if(n2>n1 || n2==-1){
+			maxRadix=radix2-1;
+		}else if(n2<n1){
+			minRadix=radix2+1;
+		}else if(n1==n2){
+			cout<<radix2<<endl;
+			flag=true;
+			break;
+		}
+	}
+
+	
+	if(flag==false)
+		cout<<"Impossible"<<endl;
+	return 0;
+}

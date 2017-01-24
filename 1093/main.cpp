@@ -1,0 +1,21 @@
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+int main(){
+	string s;
+	cin>>s;
+	int numT=0,numAT=0,num=0;
+	for(int i=s.length()-1;i>=0;--i){
+		if(s[i]=='T')
+			++numT;
+		else if(s[i]=='A')
+			numAT+=numT;
+		else if(s[i]=='P')
+			num += numAT;
+			num %= 1000000007;
+	}
+	cout<<num<<endl;
+	return 0;
+}

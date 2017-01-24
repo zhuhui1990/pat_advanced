@@ -1,0 +1,45 @@
+//πÈ≤¢≈≈–Ú
+#include <iostream>
+#include <cstdio>
+#include <vector>
+
+using namespace std;
+
+int main(){
+	int n1,n2;
+	scanf("%d",&n1);
+	vector<long> vec1(n1);
+	for(int i=0;i<n1;++i){
+		scanf("%ld",&vec1[i]);
+	}
+	scanf("%d",&n2);
+	vector<long> vec2(n2);
+	for(int i=0;i<n2;++i){
+		scanf("%ld",&vec2[i]);
+	}
+	int mid=(n1+n2-1)/2;
+	int i=0,j=0,k=0;
+	while( i<n1 && j<n2){
+		if(vec1[i]<vec2[j]){
+			if(k==mid){
+				cout<<vec1[i]<<endl;
+				return 0;
+			}
+			++i;
+		}else{
+			if(k==mid){
+				cout<<vec2[j]<<endl;
+				return 0;
+			}
+			++j;
+		}
+		++k;
+	}
+	if(i==n1){
+		j += mid-k;
+		cout<<vec2[j]<<endl;
+	}else if(j==n2){
+		i += mid-k;
+		cout<<vec1[i]<<endl;
+	}
+}
